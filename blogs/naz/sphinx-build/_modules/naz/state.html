@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>naz.state &#8212; naz v0.5.0-beta.1 documentation</title>
+    <title>naz.state &#8212; naz v0.6.0-beta.1 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -355,6 +355,63 @@
     <span class="c1"># 0b1101xxxx GSM MWI control - see [GSM 03.38]</span>
     <span class="c1"># 0b1110xxxx reserved</span>
     <span class="c1"># 0b1111xxxx GSM message class control - see [GSM 03.38]</span>
+
+
+<div class="viewcode-block" id="SmppOptionalTag"><a class="viewcode-back" href="../../state.html#naz.state.SmppOptionalTag">[docs]</a><span class="k">class</span> <span class="nc">SmppOptionalTag</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Represensts the various SMPP Optional Parameter Tags.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># see section 5.3.2 of smpp ver 3.4 spec document.</span>
+    <span class="c1"># All optional parameters have the following general TLV (Tag, Length, Value) format.</span>
+    <span class="c1"># Tag, Integer, 2octets</span>
+    <span class="c1"># Length, Integer, 2octets</span>
+    <span class="c1"># Value, type varies, size varies. eg receipted_message_id is of type c-octet string of size 1-65</span>
+
+    <span class="n">dest_addr_subunit</span> <span class="o">=</span> <span class="mh">0x0005</span>
+    <span class="n">dest_network_type</span> <span class="o">=</span> <span class="mh">0x0006</span>
+    <span class="n">dest_bearer_type</span> <span class="o">=</span> <span class="mh">0x0007</span>
+    <span class="n">dest_telematics_id</span> <span class="o">=</span> <span class="mh">0x0008</span>
+    <span class="n">source_addr_subunit</span> <span class="o">=</span> <span class="mh">0x000D</span>
+    <span class="n">source_network_type</span> <span class="o">=</span> <span class="mh">0x000E</span>
+    <span class="n">source_bearer_type</span> <span class="o">=</span> <span class="mh">0x000F</span>
+    <span class="n">source_telematics_id</span> <span class="o">=</span> <span class="mh">0x0010</span>
+    <span class="n">qos_time_to_live</span> <span class="o">=</span> <span class="mh">0x0017</span>
+    <span class="n">payload_type</span> <span class="o">=</span> <span class="mh">0x0019</span>
+    <span class="n">additional_status_info_text</span> <span class="o">=</span> <span class="mh">0x001D</span>
+    <span class="n">receipted_message_id</span> <span class="o">=</span> <span class="mh">0x001E</span>
+    <span class="n">ms_msg_wait_facilities</span> <span class="o">=</span> <span class="mh">0x0030</span>
+    <span class="n">privacy_indicator</span> <span class="o">=</span> <span class="mh">0x0201</span>
+    <span class="n">source_subaddress</span> <span class="o">=</span> <span class="mh">0x0202</span>
+    <span class="n">dest_subaddress</span> <span class="o">=</span> <span class="mh">0x0203</span>
+    <span class="n">user_message_reference</span> <span class="o">=</span> <span class="mh">0x0204</span>
+    <span class="n">user_response_code</span> <span class="o">=</span> <span class="mh">0x0205</span>
+    <span class="n">source_port</span> <span class="o">=</span> <span class="mh">0x020A</span>
+    <span class="n">destination_port</span> <span class="o">=</span> <span class="mh">0x020B</span>
+    <span class="n">sar_msg_ref_num</span> <span class="o">=</span> <span class="mh">0x020C</span>
+    <span class="n">language_indicator</span> <span class="o">=</span> <span class="mh">0x020D</span>
+    <span class="n">sar_total_segments</span> <span class="o">=</span> <span class="mh">0x020E</span>
+    <span class="n">sar_segment_seqnum</span> <span class="o">=</span> <span class="mh">0x020F</span>
+    <span class="n">SC_interface_version</span> <span class="o">=</span> <span class="mh">0x0210</span>
+    <span class="n">callback_num_pres_ind</span> <span class="o">=</span> <span class="mh">0x0302</span>
+    <span class="n">callback_num_atag</span> <span class="o">=</span> <span class="mh">0x0303</span>
+    <span class="n">number_of_messages</span> <span class="o">=</span> <span class="mh">0x0304</span>
+    <span class="n">callback_num</span> <span class="o">=</span> <span class="mh">0x0381</span>
+    <span class="n">dpf_result</span> <span class="o">=</span> <span class="mh">0x0420</span>
+    <span class="n">set_dpf</span> <span class="o">=</span> <span class="mh">0x0421</span>
+    <span class="n">ms_availability_status</span> <span class="o">=</span> <span class="mh">0x0422</span>
+    <span class="n">network_error_code</span> <span class="o">=</span> <span class="mh">0x0423</span>
+    <span class="n">message_payload</span> <span class="o">=</span> <span class="mh">0x0424</span>
+    <span class="n">delivery_failure_reason</span> <span class="o">=</span> <span class="mh">0x0425</span>
+    <span class="n">more_messages_to_send</span> <span class="o">=</span> <span class="mh">0x0426</span>
+    <span class="n">message_state</span> <span class="o">=</span> <span class="mh">0x0427</span>
+    <span class="n">ussd_service_op</span> <span class="o">=</span> <span class="mh">0x0501</span>
+    <span class="n">display_time</span> <span class="o">=</span> <span class="mh">0x1201</span>
+    <span class="n">sms_signal</span> <span class="o">=</span> <span class="mh">0x1203</span>
+    <span class="n">ms_validity</span> <span class="o">=</span> <span class="mh">0x1204</span>
+    <span class="n">alert_on_message_delivery</span> <span class="o">=</span> <span class="mh">0x130C</span>
+    <span class="n">its_reply_type</span> <span class="o">=</span> <span class="mh">0x1380</span>
+    <span class="n">its_session_info</span> <span class="o">=</span> <span class="mh">0x1383</span></div>
 </pre></div>
 
           </div>

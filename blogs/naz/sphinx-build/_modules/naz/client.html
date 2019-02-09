@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>naz.client &#8212; naz v0.5.0-beta.1 documentation</title>
+    <title>naz.client &#8212; naz v0.6.0-beta.1 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -49,7 +49,7 @@
 <span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">correlater</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">ratelimiter</span>
 
-<span class="kn">from</span> <span class="nn">.state</span> <span class="k">import</span> <span class="n">SmppSessionState</span><span class="p">,</span> <span class="n">SmppCommand</span><span class="p">,</span> <span class="n">SmppCommandStatus</span><span class="p">,</span> <span class="n">SmppDataCoding</span>
+<span class="kn">from</span> <span class="nn">.state</span> <span class="k">import</span> <span class="n">SmppSessionState</span><span class="p">,</span> <span class="n">SmppCommand</span><span class="p">,</span> <span class="n">SmppCommandStatus</span><span class="p">,</span> <span class="n">SmppDataCoding</span><span class="p">,</span> <span class="n">SmppOptionalTag</span>
 
 
 <div class="viewcode-block" id="Client"><a class="viewcode-back" href="../../client.html#naz.client.Client">[docs]</a><span class="k">class</span> <span class="nc">Client</span><span class="p">:</span>
@@ -60,6 +60,7 @@
 
 <span class="sd">    .. code-block:: python</span>
 
+<span class="sd">        import os</span>
 <span class="sd">        import asyncio</span>
 <span class="sd">        import naz</span>
 <span class="sd">        loop = asyncio.get_event_loop()</span>
@@ -69,7 +70,7 @@
 <span class="sd">                smsc_host=&quot;127.0.0.1&quot;,</span>
 <span class="sd">                smsc_port=2775,</span>
 <span class="sd">                system_id=&quot;smppclient1&quot;,</span>
-<span class="sd">                password=&quot;password&quot;,</span>
+<span class="sd">                password=os.getenv(&quot;password&quot;, &quot;password&quot;),</span>
 <span class="sd">                outboundqueue=outboundqueue,</span>
 <span class="sd">            )</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -415,7 +416,10 @@
         <span class="c1"># this will enable us to also associate responses and thus enhancing traceability of all workflows</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">correlation_handler</span><span class="o">.</span><span class="n">put</span><span class="p">(</span>
-                <span class="n">sequence_number</span><span class="o">=</span><span class="n">sequence_number</span><span class="p">,</span> <span class="n">log_id</span><span class="o">=</span><span class="n">log_id</span><span class="p">,</span> <span class="n">hook_metadata</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+                <span class="n">smpp_command</span><span class="o">=</span><span class="n">smpp_command</span><span class="p">,</span>
+                <span class="n">sequence_number</span><span class="o">=</span><span class="n">sequence_number</span><span class="p">,</span>
+                <span class="n">log_id</span><span class="o">=</span><span class="n">log_id</span><span class="p">,</span>
+                <span class="n">hook_metadata</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
             <span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="p">(</span>
@@ -496,7 +500,10 @@
 
             <span class="k">try</span><span class="p">:</span>
                 <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">correlation_handler</span><span class="o">.</span><span class="n">put</span><span class="p">(</span>
-                    <span class="n">sequence_number</span><span class="o">=</span><span class="n">sequence_number</span><span class="p">,</span> <span class="n">log_id</span><span class="o">=</span><span class="n">log_id</span><span class="p">,</span> <span class="n">hook_metadata</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+                    <span class="n">smpp_command</span><span class="o">=</span><span class="n">smpp_command</span><span class="p">,</span>
+                    <span class="n">sequence_number</span><span class="o">=</span><span class="n">sequence_number</span><span class="p">,</span>
+                    <span class="n">log_id</span><span class="o">=</span><span class="n">log_id</span><span class="p">,</span>
+                    <span class="n">hook_metadata</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
                 <span class="p">)</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="p">(</span>
@@ -879,7 +886,10 @@
 
         <span class="k">try</span><span class="p">:</span>
             <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">correlation_handler</span><span class="o">.</span><span class="n">put</span><span class="p">(</span>
-                <span class="n">sequence_number</span><span class="o">=</span><span class="n">sequence_number</span><span class="p">,</span> <span class="n">log_id</span><span class="o">=</span><span class="n">log_id</span><span class="p">,</span> <span class="n">hook_metadata</span><span class="o">=</span><span class="n">hook_metadata</span>
+                <span class="n">smpp_command</span><span class="o">=</span><span class="n">smpp_command</span><span class="p">,</span>
+                <span class="n">sequence_number</span><span class="o">=</span><span class="n">sequence_number</span><span class="p">,</span>
+                <span class="n">log_id</span><span class="o">=</span><span class="n">log_id</span><span class="p">,</span>
+                <span class="n">hook_metadata</span><span class="o">=</span><span class="n">hook_metadata</span><span class="p">,</span>
             <span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="p">(</span>
@@ -1241,6 +1251,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;event&quot;</span><span class="p">:</span> <span class="s2">&quot;naz.Client.parse_response_pdu&quot;</span><span class="p">,</span> <span class="s2">&quot;stage&quot;</span><span class="p">:</span> <span class="s2">&quot;start&quot;</span><span class="p">})</span>
 
         <span class="n">header_data</span> <span class="o">=</span> <span class="n">pdu</span><span class="p">[:</span><span class="mi">16</span><span class="p">]</span>
+        <span class="n">body_data</span> <span class="o">=</span> <span class="n">pdu</span><span class="p">[</span><span class="mi">16</span><span class="p">:]</span>
         <span class="n">command_id_header_data</span> <span class="o">=</span> <span class="n">header_data</span><span class="p">[</span><span class="mi">4</span><span class="p">:</span><span class="mi">8</span><span class="p">]</span>
         <span class="n">command_status_header_data</span> <span class="o">=</span> <span class="n">header_data</span><span class="p">[</span><span class="mi">8</span><span class="p">:</span><span class="mi">12</span><span class="p">]</span>
         <span class="n">sequence_number_header_data</span> <span class="o">=</span> <span class="n">header_data</span><span class="p">[</span><span class="mi">12</span><span class="p">:</span><span class="mi">16</span><span class="p">]</span>
@@ -1249,10 +1260,23 @@
         <span class="n">command_status</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s2">&quot;&gt;I&quot;</span><span class="p">,</span> <span class="n">command_status_header_data</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">sequence_number</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s2">&quot;&gt;I&quot;</span><span class="p">,</span> <span class="n">sequence_number_header_data</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 
+        <span class="n">smpp_command</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_search_by_command_id_code</span><span class="p">(</span><span class="n">command_id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">smpp_command</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="p">(</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">ERROR</span><span class="p">,</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;event&quot;</span><span class="p">:</span> <span class="s2">&quot;naz.Client.parse_response_pdu&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;stage&quot;</span><span class="p">:</span> <span class="s2">&quot;end&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;log_id&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;state&quot;</span><span class="p">:</span> <span class="s2">&quot;command_id:</span><span class="si">{0}</span><span class="s2"> is unknown.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">command_id</span><span class="p">),</span>
+                <span class="p">},</span>
+            <span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;command_id:</span><span class="si">{0}</span><span class="s2"> is unknown.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">command_id</span><span class="p">))</span>
+
         <span class="c1"># get associated user supplied log_id if any</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">log_id</span><span class="p">,</span> <span class="n">hook_metadata</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">correlation_handler</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
-                <span class="n">sequence_number</span><span class="o">=</span><span class="n">sequence_number</span>
+                <span class="n">smpp_command</span><span class="o">=</span><span class="n">smpp_command</span><span class="p">,</span> <span class="n">sequence_number</span><span class="o">=</span><span class="n">sequence_number</span>
             <span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="n">log_id</span><span class="p">,</span> <span class="n">hook_metadata</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span>
@@ -1267,20 +1291,8 @@
                 <span class="p">},</span>
             <span class="p">)</span>
 
-        <span class="n">smpp_command</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_search_by_command_id_code</span><span class="p">(</span><span class="n">command_id</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">smpp_command</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="p">(</span>
-                <span class="n">logging</span><span class="o">.</span><span class="n">ERROR</span><span class="p">,</span>
-                <span class="p">{</span>
-                    <span class="s2">&quot;event&quot;</span><span class="p">:</span> <span class="s2">&quot;naz.Client.parse_response_pdu&quot;</span><span class="p">,</span>
-                    <span class="s2">&quot;stage&quot;</span><span class="p">:</span> <span class="s2">&quot;end&quot;</span><span class="p">,</span>
-                    <span class="s2">&quot;log_id&quot;</span><span class="p">:</span> <span class="n">log_id</span><span class="p">,</span>
-                    <span class="s2">&quot;state&quot;</span><span class="p">:</span> <span class="s2">&quot;command_id:</span><span class="si">{0}</span><span class="s2"> is unknown.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">command_id</span><span class="p">),</span>
-                <span class="p">},</span>
-            <span class="p">)</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;command_id:</span><span class="si">{0}</span><span class="s2"> is unknown.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">command_id</span><span class="p">))</span>
-
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">speficic_handlers</span><span class="p">(</span>
+            <span class="n">body_data</span><span class="o">=</span><span class="n">body_data</span><span class="p">,</span>
             <span class="n">smpp_command</span><span class="o">=</span><span class="n">smpp_command</span><span class="p">,</span>
             <span class="n">command_status_value</span><span class="o">=</span><span class="n">command_status</span><span class="p">,</span>
             <span class="n">sequence_number</span><span class="o">=</span><span class="n">sequence_number</span><span class="p">,</span>
@@ -1300,6 +1312,7 @@
 
 <div class="viewcode-block" id="Client.speficic_handlers"><a class="viewcode-back" href="../../client.html#naz.client.Client.speficic_handlers">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">speficic_handlers</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
+        <span class="n">body_data</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span>
         <span class="n">smpp_command</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">command_status_value</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">sequence_number</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
@@ -1310,6 +1323,7 @@
 <span class="sd">        This routes the various different SMPP PDU to their respective handlers.</span>
 
 <span class="sd">        Parameters:</span>
+<span class="sd">            body_data: PDU body</span>
 <span class="sd">            smpp_command: type of PDU been sent. eg bind_transceiver</span>
 <span class="sd">            command_status_value: the response code from SMSC for a specific PDU</span>
 <span class="sd">            sequence_number: SMPP sequence_number</span>
@@ -1401,7 +1415,30 @@
             <span class="c1"># This field contains the SMSC message_id of the submitted message.</span>
             <span class="c1"># It may be used at a later stage to query the status of a message, cancel</span>
             <span class="c1"># or replace the message.</span>
-            <span class="k">pass</span>
+            <span class="n">smsc_message_id</span> <span class="o">=</span> <span class="n">body_data</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="nb">chr</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(),</span> <span class="sa">b</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="n">smsc_message_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">codec_class</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span>
+                <span class="n">smsc_message_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">encoding</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">codec_errors_level</span>
+            <span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">correlation_handler</span><span class="o">.</span><span class="n">put</span><span class="p">(</span>
+                    <span class="n">smpp_command</span><span class="o">=</span><span class="n">smpp_command</span><span class="p">,</span>
+                    <span class="n">sequence_number</span><span class="o">=</span><span class="n">sequence_number</span><span class="p">,</span>
+                    <span class="n">smsc_message_id</span><span class="o">=</span><span class="n">smsc_message_id</span><span class="p">,</span>
+                    <span class="n">log_id</span><span class="o">=</span><span class="n">log_id</span><span class="p">,</span>
+                    <span class="n">hook_metadata</span><span class="o">=</span><span class="n">hook_metadata</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="p">(</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">ERROR</span><span class="p">,</span>
+                    <span class="p">{</span>
+                        <span class="s2">&quot;event&quot;</span><span class="p">:</span> <span class="s2">&quot;naz.Client.speficic_handlers&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;stage&quot;</span><span class="p">:</span> <span class="s2">&quot;end&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;smpp_command&quot;</span><span class="p">:</span> <span class="n">smpp_command</span><span class="p">,</span>
+                        <span class="s2">&quot;log_id&quot;</span><span class="p">:</span> <span class="n">log_id</span><span class="p">,</span>
+                        <span class="s2">&quot;state&quot;</span><span class="p">:</span> <span class="s2">&quot;correlater put error&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span>
+                    <span class="p">},</span>
+                <span class="p">)</span>
         <span class="k">elif</span> <span class="n">smpp_command</span> <span class="o">==</span> <span class="n">SmppCommand</span><span class="o">.</span><span class="n">DELIVER_SM</span><span class="p">:</span>
             <span class="c1"># HEADER::</span>
             <span class="c1"># command_length, int, 4octet</span>
@@ -1434,6 +1471,44 @@
 
             <span class="c1"># NB: user&#39;s hook has already been called.</span>
             <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">deliver_sm_resp</span><span class="p">(</span><span class="n">sequence_number</span><span class="o">=</span><span class="n">sequence_number</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="c1"># get associated user supplied log_id if any</span>
+                <span class="n">target_tag</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s2">&quot;&gt;H&quot;</span><span class="p">,</span> <span class="n">SmppOptionalTag</span><span class="o">.</span><span class="n">receipted_message_id</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">target_tag</span> <span class="ow">in</span> <span class="n">body_data</span><span class="p">:</span>
+                    <span class="c1"># the PDU contains a `receipted_message_id` TLV optional tag</span>
+                    <span class="n">position_of_target_tag</span> <span class="o">=</span> <span class="n">body_data</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">target_tag</span><span class="p">)</span>
+                    <span class="c1"># since a tag is 2 integer in size lets skip one more.</span>
+                    <span class="n">end_of_target_tag</span> <span class="o">=</span> <span class="n">position_of_target_tag</span> <span class="o">+</span> <span class="mi">1</span>
+                    <span class="c1"># since after a tag, comes a tag_length which is 2 integer in size</span>
+                    <span class="c1"># lets also skip that</span>
+                    <span class="n">end_of_target_tag_length</span> <span class="o">=</span> <span class="n">end_of_target_tag</span> <span class="o">+</span> <span class="mi">2</span>
+                    <span class="n">end_of_target_tag_length</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="n">end_of_target_tag_length</span> <span class="o">+</span> <span class="mi">1</span>
+                    <span class="p">)</span>  <span class="c1"># because of c-octet string null termination</span>
+                    <span class="c1"># tag_value is of size 1 - 65</span>
+                    <span class="n">end_of_tag_value</span> <span class="o">=</span> <span class="n">end_of_target_tag_length</span> <span class="o">+</span> <span class="mi">65</span>
+                    <span class="n">tag_value</span> <span class="o">=</span> <span class="n">body_data</span><span class="p">[</span><span class="n">end_of_target_tag_length</span><span class="p">:</span><span class="n">end_of_tag_value</span><span class="p">]</span>
+                    <span class="n">tag_value</span> <span class="o">=</span> <span class="n">tag_value</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="nb">chr</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(),</span> <span class="sa">b</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+                    <span class="n">tag_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">codec_class</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span>
+                        <span class="n">tag_value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">encoding</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">codec_errors_level</span>
+                    <span class="p">)</span>
+                    <span class="n">log_id</span><span class="p">,</span> <span class="n">hook_metadata</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">correlation_handler</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                        <span class="n">smpp_command</span><span class="o">=</span><span class="n">smpp_command</span><span class="p">,</span>
+                        <span class="n">sequence_number</span><span class="o">=</span><span class="n">sequence_number</span><span class="p">,</span>
+                        <span class="n">smsc_message_id</span><span class="o">=</span><span class="n">tag_value</span><span class="p">,</span>
+                    <span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">log_id</span><span class="p">,</span> <span class="n">hook_metadata</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="p">(</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">ERROR</span><span class="p">,</span>
+                    <span class="p">{</span>
+                        <span class="s2">&quot;event&quot;</span><span class="p">:</span> <span class="s2">&quot;naz.Client.speficic_handlers&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;stage&quot;</span><span class="p">:</span> <span class="s2">&quot;start&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;log_id&quot;</span><span class="p">:</span> <span class="n">log_id</span><span class="p">,</span>
+                        <span class="s2">&quot;state&quot;</span><span class="p">:</span> <span class="s2">&quot;correlater get error&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span>
+                    <span class="p">},</span>
+                <span class="p">)</span>
         <span class="k">elif</span> <span class="n">smpp_command</span> <span class="o">==</span> <span class="n">SmppCommand</span><span class="o">.</span><span class="n">ENQUIRE_LINK</span><span class="p">:</span>
             <span class="c1"># we have to handle this. we have to return enquire_link_resp</span>
             <span class="c1"># it has no body</span>
@@ -1520,7 +1595,10 @@
 
         <span class="k">try</span><span class="p">:</span>
             <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">correlation_handler</span><span class="o">.</span><span class="n">put</span><span class="p">(</span>
-                <span class="n">sequence_number</span><span class="o">=</span><span class="n">sequence_number</span><span class="p">,</span> <span class="n">log_id</span><span class="o">=</span><span class="n">log_id</span><span class="p">,</span> <span class="n">hook_metadata</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+                <span class="n">smpp_command</span><span class="o">=</span><span class="n">smpp_command</span><span class="p">,</span>
+                <span class="n">sequence_number</span><span class="o">=</span><span class="n">sequence_number</span><span class="p">,</span>
+                <span class="n">log_id</span><span class="o">=</span><span class="n">log_id</span><span class="p">,</span>
+                <span class="n">hook_metadata</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
             <span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="p">(</span>
